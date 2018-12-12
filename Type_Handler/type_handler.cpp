@@ -1,5 +1,6 @@
+#include <typeinfo>
 #include <typeindex>
-#include <map>
+#include <unordered_map>
 #include <iostream>
 #include <memory>
 
@@ -37,6 +38,53 @@ struct TypeNotRegistered {};
 
 // PUT YOUR CODE HERE.
 
+/*
+Base class to each handler
+*/
+class Value {
+public:
+	virtual void operator()() = 0; //abstract
+};
+
+class int_Handler : public Value {
+	virtual void operator()() override {
+		std::cout << "int" << std::endl;
+	}
+};
+
+class A_Handler : public Value {
+	virtual void operator()() override {
+		std::cout << "A" << std::endl;
+	}
+};
+
+class double_Handler : public Value {
+	virtual void operator()() override {
+		std::cout<< "double" << std::endl;
+	}
+};
+
+class TypeMap {
+	std::unordered_map<std::type_index, std::shared_ptr<Value>> handler_map;
+public:
+	template<typename V>
+	void registr(const std::type_info& t, const V& v) {
+		handler_map[std::type_index(t)] = v;
+	}
+
+	template<typename T>
+	void handle(T t) {
+		//(*handler_map[std::type_index(typeid(t))])();
+		auto it = handler_map.find(std::type_index(typeid(t)));
+		if(it == handler_map.end()) {
+			throw TypeNotRegistered();
+		} else {
+			(*it->second)();
+		}
+	}
+};
+
+
 int
 main() {
 
@@ -53,4 +101,6 @@ main() {
     } catch (const TypeNotRegistered &e) {
         std::cerr << "double not registered." << std::endl;
     }
+    tm.registr(typeid(double), std::make_shared<double_Handler>());
+    tm.handle(3.3);
 }
