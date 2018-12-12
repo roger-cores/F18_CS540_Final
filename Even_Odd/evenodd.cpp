@@ -5,6 +5,23 @@
  */
 
 #include <iostream>
+#include <array>
+
+template <typename... Params>
+int evenodd(Params... params) {
+    return (sizeof...(params)) % 2 != 0;
+}
+
+int evenodd() {
+	return 0;
+}
+
+class Base {
+	int x;
+	public:
+		Base() : x(0) {}
+		Base(int x) : x(x) {} 
+};
 
 // PUT YOUR CODE HERE.
 
@@ -29,4 +46,8 @@ main() {
     int *p;
     std::cout << evenodd(1, p, 1, p, 1, p, 1, p, 1, p, 1, p, 3.14) << std::endl;
     std::cout << evenodd("a", 1, p, 1, p, 1, p, 1, p, 1, p, 1, p, 3.14) << std::endl;
+
+    Base b;
+    std::cout << evenodd(3.5, b) << std::endl;
+
 }
