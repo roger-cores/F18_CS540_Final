@@ -39,6 +39,10 @@ struct TypeNotRegistered {};
 
 // PUT YOUR CODE HERE.
 
+struct B : public A {
+    
+};
+
 /*
 Base class to each handler
 */
@@ -47,6 +51,9 @@ public:
 	virtual void operator()() = 0; //handler as a callable | abstract
 };
 
+/*
+Handlers for each type
+*/
 class int_Handler : public Value {
 	virtual void operator()() override {
 		std::cout << "int" << std::endl;
@@ -71,6 +78,7 @@ class string_Handler : public Value {
 		std::cout<< "string" << std::endl;
 	}
 };
+
 
 class TypeMap {
 	std::unordered_map<std::type_index, std::shared_ptr<Value>> handler_map;
@@ -119,4 +127,12 @@ main() {
     }
     tm.registr(typeid(std::string), std::make_shared<string_Handler>());
     tm.handle(str);
+    B b;
+    try {
+        tm.handle(b);
+    } catch (const TypeNotRegistered &e) {
+        std::cerr << "derived not registered." << std::endl;
+    }
+    tm.registr(typeid(b), std::make_shared<A_Handler>()); //use A handler for derived B
+    tm.handle(b);
 }
