@@ -6,12 +6,16 @@
 
 #include <iostream>
 #include <array>
+#include <memory>
+
+// PUT YOUR CODE HERE.
 
 template <typename... Params>
 int evenodd(Params... params) {
     return (sizeof...(params)) % 2 != 0;
 }
 
+//base case
 int evenodd() {
 	return 0;
 }
@@ -22,8 +26,6 @@ class Base {
 		Base() : x(0) {}
 		Base(int x) : x(x) {} 
 };
-
-// PUT YOUR CODE HERE.
 
 int
 main() {
@@ -49,5 +51,6 @@ main() {
 
     Base b;
     std::cout << evenodd(3.5, b) << std::endl;
+    std::cout << evenodd(3.5, std::make_shared<Base>(), false) << std::endl;
 
 }
