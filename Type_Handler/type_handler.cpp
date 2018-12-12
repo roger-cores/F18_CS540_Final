@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <iostream>
 #include <memory>
+#include <string>
 
 /*
  * Implement a TypeMap that allows different handlers to be registered
@@ -43,7 +44,7 @@ Base class to each handler
 */
 class Value {
 public:
-	virtual void operator()() = 0; //abstract
+	virtual void operator()() = 0; //handler as a callable | abstract
 };
 
 class int_Handler : public Value {
@@ -61,6 +62,13 @@ class A_Handler : public Value {
 class double_Handler : public Value {
 	virtual void operator()() override {
 		std::cout<< "double" << std::endl;
+	}
+};
+
+
+class string_Handler : public Value {
+	virtual void operator()() override {
+		std::cout<< "string" << std::endl;
 	}
 };
 
@@ -103,4 +111,12 @@ main() {
     }
     tm.registr(typeid(double), std::make_shared<double_Handler>());
     tm.handle(3.3);
+    std::string str = "hello";
+    try {
+        tm.handle(str);
+    } catch (const TypeNotRegistered &e) {
+        std::cerr << "std::string not registered." << std::endl;
+    }
+    tm.registr(typeid(std::string), std::make_shared<string_Handler>());
+    tm.handle(str);
 }
